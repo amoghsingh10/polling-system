@@ -62,12 +62,13 @@ export class PollSocketHandler {
             this.io.emit("server:chat_message", { ...data, timestamp: Date.now() });
         });
 
-        // Kick Bonus Feature
         this.socket.on("teacher:kick_user", (userId: string) => {
             const socketIds = this.pollService.getSocketIdsByUserId(userId);
             socketIds.forEach(socketId => {
                 this.io.to(socketId).emit("server:kicked");
-                this.io.in(socketId).disconnectSockets(true); // forcibly disconnect
+                setTimeout(() => {
+                    this.io.in(socketId).disconnectSockets(true); // forcibly disconnect after message delivery
+                }, 500);
             });
         });
 
