@@ -1,6 +1,7 @@
 import express from "express";
 import http from "http";
 import cors from "cors";
+import path from "path";
 import { Server } from "socket.io";
 import { PollSocketHandler } from "./src/handlers/PollSocketHandler";
 
@@ -21,7 +22,15 @@ io.on("connection", (socket) => {
     new PollSocketHandler(io, socket);
 });
 
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Catch-all route to serve the React app for any unhandled routes
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server & Client running on port ${PORT}`);
 });
