@@ -62,7 +62,8 @@ export const SocketProvider = ({ children }: { children: ReactNode }) => {
     };
 
     useEffect(() => {
-        const SOCKET_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+        // If we are in production, `window.location.origin` will be the Render URL!
+        const SOCKET_URL = import.meta.env.PROD ? window.location.origin : 'http://localhost:3001';
         const newSocket = io(SOCKET_URL);
         setSocket(newSocket);
 
